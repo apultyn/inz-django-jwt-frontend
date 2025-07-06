@@ -5,20 +5,21 @@ import type { DecodedToken, ReceivedToken } from "./interfaces";
 export function decodeToken(): DecodedToken {
     const token = Cookies.get("token");
     if (!token) {
-        return { exp: 0, iat: 0, sub: "", roles: [] };
+        return { email: "", value: "", exp: 0, iat: 0, groups: [] };
     }
     const decoded = jwtDecode<ReceivedToken>(token);
+    console.log(decoded);
     const normalized: DecodedToken = {
         ...decoded,
-        roles: decoded.roles.map((r) => r.name),
+        groups: decoded.groups.map((r) => r.name),
     };
     return normalized;
 }
 
 export function getIsAdmin() {
-    return decodeToken().roles.includes("ADMIN");
+    return decodeToken().groups.includes("books_admin");
 }
 
 export function getIsUser() {
-    return decodeToken().roles.includes("USER");
+    return Cookies.get("token") !== undefined;
 }

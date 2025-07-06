@@ -14,7 +14,7 @@ export default function TopBar() {
 
     useEffect(() => {
         const token = decodeToken();
-        setUsername(token.sub);
+        setUsername(token.email);
     }, []);
 
     return (

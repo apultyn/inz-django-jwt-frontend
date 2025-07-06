@@ -18,9 +18,9 @@ export default function LoginPage() {
         setIsLogging(true);
         setError("");
         try {
-            const response = await api.post("/auth/login", { email, password });
+            const response = await api.post("/auth/login/", { email, password });
 
-            Cookies.set("token", response.data.token, {
+            Cookies.set("token", response.data.access, {
                 secure: true,
                 sameSite: "Strict",
                 expires: response.data.expiresIn,

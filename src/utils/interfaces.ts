@@ -1,9 +1,9 @@
 export interface Review {
     id: number;
-    userEmail: string;
+    author_email: string;
     stars: number;
     comment: string;
-    bookId: number;
+    book: number;
 }
 
 export interface Book {
@@ -20,15 +20,17 @@ export interface SpringError {
 }
 
 export interface ReceivedToken {
+    email: string;
     exp: number;
     iat: number;
-    sub: string;
-    roles: { name: string }[];
+    value: string;
+    groups: { name: string }[];
 }
 
 export interface DecodedToken {
+    email: string;
     exp: number;
     iat: number;
-    sub: string;
-    roles: string[];
+    value: string;
+    groups: string[];
 }

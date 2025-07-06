@@ -20,13 +20,13 @@ export default function DeleteReview({
     const handleDelete = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        if (email !== review.userEmail) {
+        if (email !== review.author_email) {
             setError("Email mismatch");
             return;
         }
         setIsSubmitting(true);
         try {
-            await api.delete(`/reviews/${review.id}`);
+            await api.delete(`/reviews/${review.id}/`);
             fetchBook();
         } catch (e) {
             console.error(e);
