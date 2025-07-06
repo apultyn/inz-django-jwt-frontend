@@ -11,13 +11,14 @@ export function decodeToken(): DecodedToken {
     console.log(decoded);
     const normalized: DecodedToken = {
         ...decoded,
-        groups: decoded.groups.map((r) => r.name),
+        groups: decoded.groups,
     };
+    console.log("Normalized: ", normalized);
     return normalized;
 }
 
 export function getIsAdmin() {
-    return decodeToken().groups.includes("books_admin");
+    return decodeToken().groups.includes("book_admin");
 }
 
 export function getIsUser() {

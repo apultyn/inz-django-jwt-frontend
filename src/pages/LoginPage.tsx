@@ -18,7 +18,10 @@ export default function LoginPage() {
         setIsLogging(true);
         setError("");
         try {
-            const response = await api.post("/auth/login/", { email, password });
+            const response = await api.post("/auth/login/", {
+                email,
+                password,
+            });
 
             Cookies.set("token", response.data.access, {
                 secure: true,
@@ -33,7 +36,7 @@ export default function LoginPage() {
                 error.response &&
                 error.response.data
             ) {
-                setError(error.response.data.description);
+                setError(error.response.data.detail);
             } else {
                 setError("Something went wrong...");
             }

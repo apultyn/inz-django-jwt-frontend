@@ -24,7 +24,7 @@ export interface ReceivedToken {
     exp: number;
     iat: number;
     value: string;
-    groups: { name: string }[];
+    groups: string[];
 }
 
 export interface DecodedToken {

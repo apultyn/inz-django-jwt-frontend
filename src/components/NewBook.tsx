@@ -17,7 +17,7 @@ export default function NewBook({ setIsNewBook }: NewBookProps) {
         setError("");
         setIsSubmitting(true);
         try {
-            await api.post("/books/create/", { author, title });
+            await api.post("/books/", { author, title });
             setIsNewBook(false);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

@@ -51,7 +51,7 @@ export default function ReviewComponent({
         setIsSubmitting(true);
         try {
             setReview({ ...review, stars, comment });
-            await api.put(`/reviews/${reviewId}/`, { stars, comment });
+            await api.patch(`/reviews/${reviewId}/`, { stars, comment });
             setIsEditing(false);
             fetchBook();
         } catch (error) {
