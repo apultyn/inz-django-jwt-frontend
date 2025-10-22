@@ -1,14 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_BASE_URL = "http://localhost:50004/api";
+const API_BASE_URL = "http://localhost:8000/api";
 
 const api = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000,
-    headers: {
-        Accept: "application/json",
-    },
 });
 
 api.interceptors.request.use(
@@ -44,7 +41,6 @@ api.interceptors.response.use(
             error.response.status === 401 &&
             !isLoginRequest
         ) {
-            alert(error.response.data.description);
             Cookies.set("token", "");
             window.location.href = "/login";
         } else if (
@@ -52,7 +48,6 @@ api.interceptors.response.use(
             error.response.status === 403 &&
             error.response.data.description !== "Data integrity violated"
         ) {
-            alert(error.response.data.description);
             window.location.href = "/";
         } else {
             console.error("Response error: ", error);

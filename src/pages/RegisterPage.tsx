@@ -3,7 +3,12 @@ import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import axios from "axios";
-import type { SpringError } from "../utils/interfaces";
+import {
+    type RegisterRes,
+    type DjangoError,
+    type RegisterReq,
+    getValidationErrors,
+} from "../utils/interfaces";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
@@ -12,7 +17,7 @@ export default function RegisterPage() {
     const [isRegistering, setIsRegistering] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const [violations, setViolations] = useState<SpringError["violations"]>();
+    const [violations, setViolations] = useState<string[]>();
 
     const navigate = useNavigate();
 
@@ -20,26 +25,33 @@ export default function RegisterPage() {
         e.preventDefault();
         setError("");
         setSuccess("");
-        setViolations(null);
+        setViolations([]);
         setIsRegistering(true);
         try {
-            const response = await api.post("/auth/register/", {
+            const req: RegisterReq = {
                 email,
                 password,
                 confirm_password: confirmPassword,
-            });
-            setSuccess(response.data.msg);
+            };
+            const response = await api.post<RegisterRes>(
+                "/auth/register/",
+                req
+            );
+            setSuccess(
+                `User ${response.data.email} registered successfully! You can log in now`
+            );
             setEmail("");
             setPassword("");
             setConfirmPassword("");
         } catch (error) {
-            if (axios.isAxiosError<SpringError>(error) && error.response) {
-                if (error.response.data.description) {
-                    setError(error.response.data.description);
-                }
-                if (error.response.data.violations) {
-                    setViolations(error.response.data.violations);
-                }
+            if (
+                axios.isAxiosError<DjangoError>(error) &&
+                error.response &&
+                error.status === 400
+            ) {
+                const errorData: DjangoError = error.response.data;
+                const violations = getValidationErrors(errorData);
+                setViolations(violations);
             } else {
                 setError("Something went wrong...");
             }

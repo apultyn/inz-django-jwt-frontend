@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import api from "../utils/api";
-import type { SpringError } from "../utils/interfaces";
+import {
+    getValidationErrors,
+    type DjangoError,
+    type ReviewCreateReq,
+} from "../utils/interfaces";
 import axios from "axios";
 
 interface NewReviewProps {
@@ -13,7 +17,7 @@ export default function NewReview({ bookId, setIsNewReview }: NewReviewProps) {
     const [comment, setComment] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [violations, setViolations] = useState<SpringError["violations"]>();
+    const [violations, setViolations] = useState<string[]>();
 
     const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +36,7 @@ export default function NewReview({ bookId, setIsNewReview }: NewReviewProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        setViolations(null);
+        setViolations([]);
         if (!stars) {
             setError("Please select a rating.");
             return;
@@ -43,19 +47,22 @@ export default function NewReview({ bookId, setIsNewReview }: NewReviewProps) {
         }
         setIsSubmitting(true);
         try {
-            await api.post(`/reviews/`, {
+            const req: ReviewCreateReq = {
                 book: bookId,
                 stars,
                 comment,
-            });
+            };
+            await api.post(`/reviews/`, req);
             setIsNewReview(false);
         } catch (error) {
-            if (axios.isAxiosError<SpringError>(error) && error.response) {
-                if (error.response.data.violations) {
-                    setViolations(error.response.data.violations);
-                } else if (error.response.data.detail) {
-                    setError(error.response.data.detail);
-                }
+            if (
+                axios.isAxiosError<DjangoError>(error) &&
+                error.response &&
+                error.status === 400
+            ) {
+                const errorData: DjangoError = error.response.data;
+                const violations = getValidationErrors(errorData);
+                setViolations(violations);
             } else {
                 setError("Something went wrong...");
             }

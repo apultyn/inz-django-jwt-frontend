@@ -1,26 +1,26 @@
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import type { DecodedToken, ReceivedToken } from "./interfaces";
+import type { DecodedToken } from "./interfaces";
 
 export function decodeToken(): DecodedToken {
     const token = Cookies.get("token");
     if (!token) {
-        return { email: "", value: "", exp: 0, iat: 0, groups: [] };
+        return {
+            email: "",
+            iat: 0,
+            exp: 0,
+            groups: [],
+            sub: 0,
+        };
     }
-    const decoded = jwtDecode<ReceivedToken>(token);
-    console.log(decoded);
-    const normalized: DecodedToken = {
-        ...decoded,
-        groups: decoded.groups,
-    };
-    console.log("Normalized: ", normalized);
-    return normalized;
+    const decoded = jwtDecode<DecodedToken>(token);
+    return decoded;
 }
 
-export function getIsAdmin() {
+export function getIsAdmin(): boolean {
     return decodeToken().groups.includes("book_admin");
 }
 
-export function getIsUser() {
-    return Cookies.get("token") !== undefined;
+export function getIsUser(): boolean {
+    return decodeToken().groups.includes("book_user");
 }
