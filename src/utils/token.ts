@@ -18,9 +18,9 @@ export function decodeToken(): DecodedToken {
 }
 
 export function getIsAdmin(): boolean {
-    return decodeToken().groups.includes("book_admin");
+    return (decodeToken().groups ?? []).includes("book_admin");
 }
 
 export function getIsUser(): boolean {
-    return decodeToken().groups.includes("book_user");
+    return (decodeToken().groups ?? []).includes("book_user");
 }

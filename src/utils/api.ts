@@ -1,7 +1,15 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_BASE_URL = "http://django-jwt-backend:8080/api";
+declare global {
+    interface Window {
+        env: {
+            API_BASE_URL: string;
+        };
+    }
+}
+
+const API_BASE_URL = window.env.API_BASE_URL;
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -30,11 +38,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        const url = error.config.url ?? "";
         const isLoginRequest =
             error.config &&
             error.config.method === "post" &&
-            error.config.url &&
-            error.config.url.includes("/auth/login");
+            url.includes("/auth/login");
 
         if (
             error.response &&
