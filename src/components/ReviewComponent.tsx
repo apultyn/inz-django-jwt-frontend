@@ -35,7 +35,7 @@ export default function ReviewComponent({
 
     const fetchReview = useCallback(async () => {
         try {
-            const response = await api.get<Review>(`/reviews/${reviewId}`);
+            const response = await api.get<Review>(`/reviews/${reviewId}/`);
             setReview(response.data);
         } catch (error) {
             console.error(error);

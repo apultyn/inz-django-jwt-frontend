@@ -48,7 +48,7 @@ export default function NewReview({ bookId, setIsNewReview }: NewReviewProps) {
         setIsSubmitting(true);
         try {
             const req: ReviewCreateReq = {
-                book: bookId,
+                bookId,
                 stars,
                 comment,
             };

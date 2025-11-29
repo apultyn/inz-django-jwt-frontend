@@ -54,7 +54,7 @@ export interface RegisterRes {
 export interface ReviewCreateReq {
     stars: number;
     comment: string;
-    book: number;
+    bookId: number;
 }
 
 export interface ReviewUpdateReq {
